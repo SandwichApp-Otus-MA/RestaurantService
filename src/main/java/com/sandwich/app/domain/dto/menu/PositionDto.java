@@ -1,8 +1,10 @@
 package com.sandwich.app.domain.dto.menu;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.sandwich.app.domain.dto.DomainObjectDto;
 import com.sandwich.app.domain.dto.enums.PositionFeature;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.util.Collections;
@@ -10,10 +12,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PositionDto {
-    private UUID id;
+public class PositionDto extends DomainObjectDto {
 
     private String name;
 

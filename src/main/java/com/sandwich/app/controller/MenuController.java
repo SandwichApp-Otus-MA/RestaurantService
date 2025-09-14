@@ -1,10 +1,10 @@
 package com.sandwich.app.controller;
 
+import com.sandwich.app.domain.dto.menu.MenuDto;
+import com.sandwich.app.domain.dto.menu.MenuFilter;
 import com.sandwich.app.domain.dto.pagination.PageData;
 import com.sandwich.app.domain.dto.pagination.PaginationRequest;
-import com.sandwich.app.domain.dto.restaurant.RestaurantDto;
-import com.sandwich.app.domain.dto.restaurant.RestaurantFilter;
-import com.sandwich.app.service.RestaurantService;
+import com.sandwich.app.service.MenuService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,31 +24,31 @@ import java.util.UUID;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/v1/restaurant")
+@RequestMapping("/v1/menu")
 @RequiredArgsConstructor
-public class RestaurantController {
+public class MenuController {
 
-    private final RestaurantService service;
+    private final MenuService service;
 
     @GetMapping("/{id}")
-    public ResponseEntity<RestaurantDto> getById(@PathVariable UUID id) {
+    public ResponseEntity<MenuDto> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(service.get(id));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<PageData<RestaurantDto>> getAll(@Valid @RequestBody PaginationRequest<RestaurantFilter> request) {
+    public ResponseEntity<PageData<MenuDto>> getAll(@Valid @RequestBody PaginationRequest<MenuFilter> request) {
         return ResponseEntity.ok(service.getAll(request));
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/create")
-    public ResponseEntity<UUID> create(@Valid @RequestBody RestaurantDto restaurant) {
-        return ResponseEntity.ok(service.create(restaurant));
+    public ResponseEntity<UUID> create(@Valid @RequestBody MenuDto menu) {
+        return ResponseEntity.ok(service.create(menu));
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<Void> edit(@Valid @RequestBody RestaurantDto restaurant) {
-        service.edit(restaurant);
+    public ResponseEntity<Void> edit(@Valid @RequestBody MenuDto menu) {
+        service.edit(menu);
         return ResponseEntity.ok().build();
     }
 

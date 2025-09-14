@@ -1,28 +1,27 @@
-package com.sandwich.app.domain.dto.menu;
+package com.sandwich.app.domain.dto.product;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sandwich.app.domain.dto.DomainObjectDto;
-import jakarta.validation.constraints.NotNull;
+import com.sandwich.app.domain.dto.enums.MeasureUnit;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class MenuDto extends DomainObjectDto {
+public class ProductDto extends DomainObjectDto {
 
-    @NotNull
     private String name;
 
-    @NotNull
-    private List<PositionDto> positions = Collections.emptyList();
+    private Integer count;
 
-    @NotNull
+    private MeasureUnit measureUnit;
+
+    private ProductInfoDto productInfo;
+
     private UUID restaurantId;
 }

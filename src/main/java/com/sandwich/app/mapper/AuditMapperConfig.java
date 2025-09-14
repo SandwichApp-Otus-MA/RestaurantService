@@ -1,5 +1,6 @@
 package com.sandwich.app.mapper;
 
+import com.sandwich.app.domain.dto.DomainObjectDto;
 import com.sandwich.app.domain.entity.AuditDomainObject;
 import org.mapstruct.MapperConfig;
 import org.mapstruct.Mapping;
@@ -13,5 +14,5 @@ public interface AuditMapperConfig {
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
-    AuditDomainObject convert(@MappingTarget AuditDomainObject entity, Object to);
+    AuditDomainObject convert(@MappingTarget AuditDomainObject entity, DomainObjectDto to);
 }

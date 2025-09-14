@@ -7,7 +7,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(
-    config = AuditMapperConfig.class
+    config = AuditMapperConfig.class,
+    uses = MenuMapper.class
 )
 public interface RestaurantMapper {
 

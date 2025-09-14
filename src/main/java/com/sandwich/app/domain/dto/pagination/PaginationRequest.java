@@ -1,7 +1,5 @@
-package com.sandwich.app.domain.dto.restaurant;
+package com.sandwich.app.domain.dto.pagination;
 
-import com.sandwich.app.domain.dto.pagination.Pagination;
-import com.sandwich.app.domain.dto.pagination.Sorting;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -11,8 +9,9 @@ import java.util.Optional;
 
 @Data
 @Accessors(chain = true)
-public class RestaurantSearchRequest {
-    private RestaurantFilter filter;
+public class PaginationRequest<T> {
+
+    private T filter;
 
     private Pagination pagination;
 
