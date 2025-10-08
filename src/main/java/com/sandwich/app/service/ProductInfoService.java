@@ -1,13 +1,13 @@
 package com.sandwich.app.service;
 
-import static com.sandwich.app.utils.PageUtil.createPage;
-import static com.sandwich.app.utils.PageUtil.createPageable;
-import static com.sandwich.app.utils.PageUtil.createSort;
+import static com.sandwich.app.models.utils.PageUtil.createPage;
+import static com.sandwich.app.models.utils.PageUtil.createPageable;
+import static com.sandwich.app.models.utils.PageUtil.createSort;
 
-import com.sandwich.app.domain.dto.pagination.PageData;
-import com.sandwich.app.domain.dto.pagination.PaginationRequest;
-import com.sandwich.app.domain.dto.product.ProductInfoDto;
-import com.sandwich.app.domain.dto.product.ProductInfoFilter;
+import com.sandwich.app.models.model.restaurant.product.ProductInfoDto;
+import com.sandwich.app.models.model.restaurant.product.ProductInfoFilter;
+import com.sandwich.app.models.pagination.PageData;
+import com.sandwich.app.models.pagination.PaginationRequest;
 import com.sandwich.app.domain.entity.ProductInfoEntity;
 import com.sandwich.app.domain.repository.ProductInfoRepository;
 import com.sandwich.app.mapper.ProductInfoMapper;

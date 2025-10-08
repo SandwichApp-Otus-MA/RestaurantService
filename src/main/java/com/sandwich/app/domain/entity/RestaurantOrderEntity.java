@@ -1,8 +1,8 @@
 package com.sandwich.app.domain.entity;
 
-import com.sandwich.app.models.model.enums.PositionFeature;
+import com.sandwich.app.models.model.enums.RestaurantOrderStatus;
+import com.sandwich.app.models.model.order.OrderItem;
 import com.sandwich.app.models.model.restaurant.menu.Component;
-import com.sandwich.app.models.model.restaurant.menu.Configuration;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,8 +19,11 @@ import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.springframework.data.annotation.CreatedDate;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,32 +34,28 @@ import java.util.UUID;
 @FieldNameConstants
 @NoArgsConstructor
 @Entity
-@Table(name = "positions")
-public class PositionEntity extends AuditDomainObject {
-
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "image_id")
-    private UUID imageId;
-
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "configurations", columnDefinition = "jsonb")
-    private List<Configuration> configurations = new ArrayList<>();
-
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "components", columnDefinition = "jsonb")
-    private List<Component> components = new ArrayList<>();
+@Table(name = "restaurant_orders")
+public class RestaurantOrderEntity extends DomainObject {
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "features")
-    private List<PositionFeature> features = new ArrayList<>();
+    @Column(name = "status")
+    private RestaurantOrderStatus status = RestaurantOrderStatus.CREATE;
 
-    @Column(name = "description")
-    private String description;
-
-    @JoinColumn(name = "menu_id")
+    @JoinColumn(name = "restaurant_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private MenuEntity menu;
+    private RestaurantEntity restaurant;
 
+    @Column(name = "order_id")
+    private UUID orderId;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "order_items", columnDefinition = "jsonb")
+    private List<OrderItem> items = new ArrayList<>();
+
+    @CreatedDate
+    @Column(name = "created_at")
+    private Instant createdAt;
+
+    @Column(name = "comment")
+    private String comment;
 }

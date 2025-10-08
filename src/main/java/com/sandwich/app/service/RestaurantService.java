@@ -1,22 +1,33 @@
 package com.sandwich.app.service;
 
-import static com.sandwich.app.utils.PageUtil.createPage;
-import static com.sandwich.app.utils.PageUtil.createPageable;
-import static com.sandwich.app.utils.PageUtil.createSort;
+import static com.sandwich.app.models.utils.PageUtil.createPage;
+import static com.sandwich.app.models.utils.PageUtil.createPageable;
+import static com.sandwich.app.models.utils.PageUtil.createSort;
 
-import com.sandwich.app.domain.dto.pagination.PageData;
-import com.sandwich.app.domain.dto.pagination.PaginationRequest;
-import com.sandwich.app.domain.dto.restaurant.RestaurantDto;
-import com.sandwich.app.domain.dto.restaurant.RestaurantFilter;
 import com.sandwich.app.domain.entity.RestaurantEntity;
+import com.sandwich.app.domain.entity.RestaurantOrderEntity;
+import com.sandwich.app.domain.repository.RestaurantOrderRepository;
 import com.sandwich.app.domain.repository.RestaurantRepository;
+import com.sandwich.app.kafka.OrderEventProducer;
 import com.sandwich.app.mapper.RestaurantMapper;
+import com.sandwich.app.mapper.RestaurantOrderMapper;
+import com.sandwich.app.models.model.enums.OrderStatus;
+import com.sandwich.app.models.model.enums.RestaurantOrderStatus;
+import com.sandwich.app.models.model.enums.RestaurantStatus;
+import com.sandwich.app.models.model.restaurant.restaurant.RestaurantDto;
+import com.sandwich.app.models.model.restaurant.restaurant.RestaurantFilter;
+import com.sandwich.app.models.model.restaurant.restaurant.RestaurantOrderRequest;
+import com.sandwich.app.models.model.restaurant.restaurant.RestaurantOrderResponse;
+import com.sandwich.app.models.pagination.PageData;
+import com.sandwich.app.models.pagination.PaginationRequest;
 import com.sandwich.app.query.builder.RestaurantQueryBuilder;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,8 +37,12 @@ import java.util.stream.Collectors;
 public class RestaurantService {
 
     private final RestaurantRepository repository;
+    private final RestaurantOrderRepository orderRepository;
     private final RestaurantMapper mapper;
+    private final RestaurantOrderMapper orderMapper;
     private final RestaurantQueryBuilder queryBuilder;
+    private final TransactionTemplate transactionTemplate;
+    private final OrderEventProducer orderEventProducer;
 
     @Transactional(readOnly = true)
     public RestaurantDto get(UUID id) {
@@ -81,5 +96,38 @@ public class RestaurantService {
             });
     }
 
+    @Transactional
+    public RestaurantOrderResponse createOrder(RestaurantOrderRequest request) {
+        var orderId = orderRepository.findByOrderId(request.getOrderId());
 
+        if (orderId.isPresent()) {
+            return new RestaurantOrderResponse()
+                .setId(orderId.get().getId())
+                .setStatus(RestaurantStatus.REJECTED)
+                .setComment("Заказ уже существует!");
+        }
+
+        var newOrder = orderMapper.convert(new RestaurantOrderEntity(), request);
+        newOrder.setRestaurant(repository.getReferenceById(request.getId()));
+
+        // TODO: проверки на выполнимость заказа
+        return new RestaurantOrderResponse()
+            .setId(newOrder.getId())
+            .setStatus(RestaurantStatus.ACCEPTED);
+    }
+
+    public void cancelOrder(UUID restaurantId, UUID orderId) {
+        transactionTemplate.executeWithoutResult(status -> {
+            var restaurantOrder = orderRepository.findByOrderId(orderId).orElseThrow((() ->
+                new EntityNotFoundException("Не найден заказ с id: %s!".formatted(orderId))));
+
+            if (Objects.equals(restaurantOrder.getRestaurant().getId(), restaurantId)) {
+                throw new IllegalArgumentException("Отменяемый заказ не соответствует выбранному ресторану!");
+            }
+
+            restaurantOrder.setStatus(RestaurantOrderStatus.CANCELED);
+        });
+
+        orderEventProducer.send(orderId, OrderStatus.RESTAURANT_REJECTED);
+    }
 }

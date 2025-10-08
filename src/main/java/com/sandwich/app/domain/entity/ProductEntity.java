@@ -1,6 +1,6 @@
 package com.sandwich.app.domain.entity;
 
-import com.sandwich.app.domain.dto.enums.MeasureUnit;
+import com.sandwich.app.models.model.enums.MeasureUnit;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

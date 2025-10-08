@@ -1,9 +1,11 @@
 package com.sandwich.app.controller;
 
-import com.sandwich.app.domain.dto.pagination.PageData;
-import com.sandwich.app.domain.dto.pagination.PaginationRequest;
-import com.sandwich.app.domain.dto.restaurant.RestaurantDto;
-import com.sandwich.app.domain.dto.restaurant.RestaurantFilter;
+import com.sandwich.app.models.model.restaurant.restaurant.RestaurantDto;
+import com.sandwich.app.models.model.restaurant.restaurant.RestaurantFilter;
+import com.sandwich.app.models.model.restaurant.restaurant.RestaurantOrderRequest;
+import com.sandwich.app.models.model.restaurant.restaurant.RestaurantOrderResponse;
+import com.sandwich.app.models.pagination.PageData;
+import com.sandwich.app.models.pagination.PaginationRequest;
 import com.sandwich.app.service.RestaurantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +46,19 @@ public class RestaurantController {
     @PostMapping("/create")
     public ResponseEntity<UUID> create(@Valid @RequestBody RestaurantDto restaurant) {
         return ResponseEntity.ok(service.create(restaurant));
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/create/order")
+    public ResponseEntity<RestaurantOrderResponse> createOrder(@Valid @RequestBody RestaurantOrderRequest request) {
+        return ResponseEntity.ok(service.createOrder(request));
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/cancel/order/{restaurantId}/{orderId}")
+    public ResponseEntity<Void> cancelOrder(@PathVariable UUID restaurantId, @PathVariable UUID orderId) {
+        service.cancelOrder(restaurantId, orderId);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/edit")

@@ -4,7 +4,7 @@ sandwich:
     security.protocol: ${SANDWICH_KAFKA_SECURITY_PROTOCOL:PLAINTEXT}
     producer:
       topic:
-        notification: ${SANDWICH_NOTIFICATION_TOPIC:sandwich-notification}
+        order: ${SANDWICH_ORDER_TOPIC:sandwich-order}
 
 billing-service:
   kafka:

@@ -1,14 +1,14 @@
 package com.sandwich.app.mapper;
 
-import com.sandwich.app.domain.dto.restaurant.RestaurantDto;
 import com.sandwich.app.domain.entity.RestaurantEntity;
+import com.sandwich.app.models.model.restaurant.restaurant.RestaurantDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(
     config = AuditMapperConfig.class,
-    uses = MenuMapper.class
+    uses = {MenuMapper.class, RestaurantOrderMapper.class}
 )
 public interface RestaurantMapper {
 

@@ -1,6 +1,6 @@
 package com.sandwich.app.mapper;
 
-import com.sandwich.app.domain.dto.menu.PositionDto;
+import com.sandwich.app.models.model.restaurant.menu.PositionDto;
 import com.sandwich.app.domain.entity.PositionEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -1,16 +1,16 @@
 package com.sandwich.app.service;
 
-import static com.sandwich.app.utils.PageUtil.createPage;
-import static com.sandwich.app.utils.PageUtil.createPageable;
-import static com.sandwich.app.utils.PageUtil.createSort;
+import static com.sandwich.app.models.utils.PageUtil.createPage;
+import static com.sandwich.app.models.utils.PageUtil.createPageable;
+import static com.sandwich.app.models.utils.PageUtil.createSort;
 
-import com.sandwich.app.domain.dto.pagination.PageData;
-import com.sandwich.app.domain.dto.pagination.PaginationRequest;
-import com.sandwich.app.domain.dto.product.ProductDto;
-import com.sandwich.app.domain.dto.product.ProductFilter;
 import com.sandwich.app.domain.entity.ProductEntity;
 import com.sandwich.app.domain.repository.ProductRepository;
 import com.sandwich.app.mapper.ProductMapper;
+import com.sandwich.app.models.model.restaurant.product.ProductDto;
+import com.sandwich.app.models.model.restaurant.product.ProductFilter;
+import com.sandwich.app.models.pagination.PageData;
+import com.sandwich.app.models.pagination.PaginationRequest;
 import com.sandwich.app.query.builder.ProductQueryBuilder;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
 package com.sandwich.app.mapper;
 
-import com.sandwich.app.domain.dto.DomainObjectDto;
 import com.sandwich.app.domain.entity.AuditDomainObject;
+import com.sandwich.app.models.model.DomainObjectDto;
 import org.mapstruct.MapperConfig;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

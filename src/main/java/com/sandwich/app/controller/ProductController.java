@@ -1,9 +1,9 @@
 package com.sandwich.app.controller;
 
-import com.sandwich.app.domain.dto.pagination.PageData;
-import com.sandwich.app.domain.dto.pagination.PaginationRequest;
-import com.sandwich.app.domain.dto.product.ProductDto;
-import com.sandwich.app.domain.dto.product.ProductFilter;
+import com.sandwich.app.models.pagination.PageData;
+import com.sandwich.app.models.pagination.PaginationRequest;
+import com.sandwich.app.models.model.restaurant.product.ProductDto;
+import com.sandwich.app.models.model.restaurant.product.ProductFilter;
 import com.sandwich.app.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

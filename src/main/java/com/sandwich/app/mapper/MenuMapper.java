@@ -1,6 +1,6 @@
 package com.sandwich.app.mapper;
 
-import com.sandwich.app.domain.dto.menu.MenuDto;
+import com.sandwich.app.models.model.restaurant.menu.MenuDto;
 import com.sandwich.app.domain.entity.MenuEntity;
 import com.sandwich.app.domain.entity.PositionEntity;
 import lombok.Setter;

@@ -1,6 +1,6 @@
 package com.sandwich.app.mapper;
 
-import com.sandwich.app.domain.dto.product.ProductInfoDto;
+import com.sandwich.app.models.model.restaurant.product.ProductInfoDto;
 import com.sandwich.app.domain.entity.ProductInfoEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -1,9 +1,9 @@
 package com.sandwich.app.query.builder;
 
 import com.querydsl.core.BooleanBuilder;
-import com.sandwich.app.domain.dto.product.ProductFilter;
+import com.sandwich.app.models.model.restaurant.product.ProductFilter;
 import com.sandwich.app.domain.entity.QProductEntity;
-import com.sandwich.app.utils.AdvancedFilterUtil;
+import com.sandwich.app.models.utils.AdvancedFilterUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
