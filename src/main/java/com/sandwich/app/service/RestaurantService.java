@@ -11,9 +11,11 @@ import com.sandwich.app.domain.repository.RestaurantRepository;
 import com.sandwich.app.kafka.OrderEventProducer;
 import com.sandwich.app.mapper.RestaurantMapper;
 import com.sandwich.app.mapper.RestaurantOrderMapper;
+import com.sandwich.app.models.model.enums.EventType;
 import com.sandwich.app.models.model.enums.OrderStatus;
 import com.sandwich.app.models.model.enums.RestaurantOrderStatus;
 import com.sandwich.app.models.model.enums.RestaurantStatus;
+import com.sandwich.app.models.model.event.NotificationEvent;
 import com.sandwich.app.models.model.restaurant.restaurant.RestaurantDto;
 import com.sandwich.app.models.model.restaurant.restaurant.RestaurantFilter;
 import com.sandwich.app.models.model.restaurant.restaurant.RestaurantOrderRequest;
@@ -21,12 +23,14 @@ import com.sandwich.app.models.model.restaurant.restaurant.RestaurantOrderRespon
 import com.sandwich.app.models.pagination.PageData;
 import com.sandwich.app.models.pagination.PaginationRequest;
 import com.sandwich.app.query.builder.RestaurantQueryBuilder;
+import com.sandwich.app.restservices.service.DeliveryRestService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,6 +47,7 @@ public class RestaurantService {
     private final RestaurantQueryBuilder queryBuilder;
     private final TransactionTemplate transactionTemplate;
     private final OrderEventProducer orderEventProducer;
+    private final DeliveryRestService deliveryRestService;
 
     @Transactional(readOnly = true)
     public RestaurantDto get(UUID id) {
@@ -98,16 +103,17 @@ public class RestaurantService {
 
     @Transactional
     public RestaurantOrderResponse createOrder(RestaurantOrderRequest request) {
-        var orderId = orderRepository.findByOrderId(request.getOrderId());
+        var order = orderRepository.findByOrderId(request.getOrderId());
 
-        if (orderId.isPresent()) {
+        if (order.isPresent()) {
             return new RestaurantOrderResponse()
-                .setId(orderId.get().getId())
+                .setId(order.get().getId())
                 .setStatus(RestaurantStatus.REJECTED)
                 .setComment("Заказ уже существует!");
         }
 
         var newOrder = orderMapper.convert(new RestaurantOrderEntity(), request);
+        newOrder.setStatus(RestaurantOrderStatus.PREPARING);
         newOrder.setRestaurant(repository.getReferenceById(request.getId()));
 
         // TODO: проверки на выполнимость заказа
@@ -117,7 +123,12 @@ public class RestaurantService {
     }
 
     public void cancelOrder(UUID restaurantId, UUID orderId) {
-        transactionTemplate.executeWithoutResult(status -> {
+        changeOrderStatus(restaurantId, orderId, RestaurantOrderStatus.CANCELED);
+        orderEventProducer.send(orderId, OrderStatus.RESTAURANT_REJECTED);
+    }
+
+    public void changeOrderStatus(UUID restaurantId, UUID orderId, RestaurantOrderStatus status) {
+        transactionTemplate.executeWithoutResult(st -> {
             var restaurantOrder = orderRepository.findByOrderId(orderId).orElseThrow((() ->
                 new EntityNotFoundException("Не найден заказ с id: %s!".formatted(orderId))));
 
@@ -125,9 +136,16 @@ public class RestaurantService {
                 throw new IllegalArgumentException("Отменяемый заказ не соответствует выбранному ресторану!");
             }
 
-            restaurantOrder.setStatus(RestaurantOrderStatus.CANCELED);
+            restaurantOrder.setStatus(status);
         });
 
-        orderEventProducer.send(orderId, OrderStatus.RESTAURANT_REJECTED);
+        if (status == RestaurantOrderStatus.COMPLETED) {
+            // TODO: можно использовать rabbit
+            deliveryRestService.notify(new NotificationEvent()
+                .setEventType(EventType.SUCCESS)
+                .setMessage("Заказ готов и ожидает курьера!")
+                .setOperation("RESTAURANT_ORDER_COMPLETED")
+                .setData(Map.of("orderId", orderId)));
+        }
     }
 }

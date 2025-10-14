@@ -1,5 +1,6 @@
 package com.sandwich.app.controller;
 
+import com.sandwich.app.models.model.enums.RestaurantOrderStatus;
 import com.sandwich.app.models.model.restaurant.restaurant.RestaurantDto;
 import com.sandwich.app.models.model.restaurant.restaurant.RestaurantFilter;
 import com.sandwich.app.models.model.restaurant.restaurant.RestaurantOrderRequest;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,13 +51,20 @@ public class RestaurantController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/create/order")
+    @PostMapping("/order/create")
     public ResponseEntity<RestaurantOrderResponse> createOrder(@Valid @RequestBody RestaurantOrderRequest request) {
         return ResponseEntity.ok(service.createOrder(request));
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/cancel/order/{restaurantId}/{orderId}")
+    @PostMapping("/order/change-status/{restaurantId}/{orderId}")
+    public ResponseEntity<RestaurantOrderResponse> changeStatus(@PathVariable UUID restaurantId,
+                                                                @PathVariable UUID orderId,
+                                                                @RequestParam RestaurantOrderStatus status) {
+        service.changeOrderStatus(restaurantId, orderId, status);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/order/cancel/{restaurantId}/{orderId}")
     public ResponseEntity<Void> cancelOrder(@PathVariable UUID restaurantId, @PathVariable UUID orderId) {
         service.cancelOrder(restaurantId, orderId);
         return ResponseEntity.ok().build();
