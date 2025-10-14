@@ -5,9 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
@@ -26,11 +24,9 @@ import lombok.experimental.FieldNameConstants;
 @Entity
 @Table(name = "products")
 public class ProductEntity extends DomainObject {
+
     @Column(name = "name")
     private String name;
-
-    @Column(name = "count")
-    private Integer count;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "measure_unit")
@@ -40,7 +36,6 @@ public class ProductEntity extends DomainObject {
     @JoinColumn(name = "product_info_id")
     private ProductInfoEntity productInfo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id")
-    private RestaurantEntity restaurant;
+    @Column(name = "description")
+    private String description;
 }

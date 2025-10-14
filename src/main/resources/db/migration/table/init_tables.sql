@@ -84,16 +84,12 @@ create table if not exists products
 (
     id uuid not null primary key,
     name varchar(255) not null,
-    count int not null,
     measure_unit varchar not null,
-    restaurant_id uuid not null,
+    description text,
     product_info_id uuid not null,
     constraint products_products_info_fkey
         foreign key (product_info_id)
-            references products_info (id),
-    constraint products_restaurant_fkey
-        foreign key (restaurant_id)
-            references restaurants (id)
+            references products_info (id)
 );
 
 create table restaurant_orders

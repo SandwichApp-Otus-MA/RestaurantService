@@ -12,11 +12,9 @@ import org.mapstruct.MappingTarget;
 )
 public interface ProductMapper {
 
-    @Mapping(target = "restaurantId", source = "restaurant.id")
     ProductDto convert(ProductEntity entity);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "restaurant", ignore = true)
     ProductEntity convert(@MappingTarget ProductEntity entity, ProductDto dto);
 
 }
