@@ -39,7 +39,7 @@ public class RestaurantController {
         return ResponseEntity.ok(service.get(id));
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<PageData<RestaurantDto>> getAll(@Valid @RequestBody PaginationRequest<RestaurantFilter> request) {
         return ResponseEntity.ok(service.getAll(request));
     }

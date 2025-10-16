@@ -1,6 +1,7 @@
 package com.sandwich.app.domain.entity;
 
 import com.sandwich.app.models.model.enums.MeasureUnit;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -32,7 +33,7 @@ public class ProductEntity extends DomainObject {
     @Column(name = "measure_unit")
     private MeasureUnit measureUnit;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_info_id")
     private ProductInfoEntity productInfo;
 

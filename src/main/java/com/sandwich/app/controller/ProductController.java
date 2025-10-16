@@ -35,7 +35,7 @@ public class ProductController {
         return ResponseEntity.ok(service.get(id));
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<PageData<ProductDto>> getAll(@Valid @RequestBody PaginationRequest<ProductFilter> request) {
         return ResponseEntity.ok(service.getAll(request));
     }

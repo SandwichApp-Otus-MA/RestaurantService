@@ -35,7 +35,7 @@ public class MenuController {
         return ResponseEntity.ok(service.get(id));
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<PageData<MenuDto>> getAll(@Valid @RequestBody PaginationRequest<MenuFilter> request) {
         return ResponseEntity.ok(service.getAll(request));
     }

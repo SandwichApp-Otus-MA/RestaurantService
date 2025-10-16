@@ -3,3 +3,8 @@ rest:
     timeout:
       connect-timeout: ${CONNECT_TIMEOUT:5s}
       read-timeout: ${READ_TIMEOUT:30s}
+    delivery:
+      url: ${DELIVERY_SERVICE_URL:http://localhost:8082}
+      endpoints:
+        create: ${DELIVERY_CREATE_ENDPOINT:/v1/delivery/create}
+        cancel: ${DELIVERY_CANCEL_ENDPOINT:/v1/delivery/cancel/{deliveryId}/{orderId}}
